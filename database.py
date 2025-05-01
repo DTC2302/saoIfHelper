@@ -56,7 +56,7 @@ def popUp(item):
                 vals = cur.fetchone()
                 eType = vals[2]
                 st.write("Level Req: %s" % (vals)[1])
-                if (eType not in ["Helm","Chest","Leggings"]):
+                if (eType not in ["Chest","Leggings"]):
                     cur.execute("Select * from Weapon where name = '%s'" % item)
                     weapon = cur.fetchone()
                     st.write("Min Atk: %s" % (weapon[1]))
@@ -64,8 +64,8 @@ def popUp(item):
                 else:
                     cur.execute("Select * from Armor where name = '%s'" % item)
                     Armor = cur.fetchone()
-                    st.write("Min Atk: %s" % (Armor[1]))
-                    st.write("Max Atk: %s" % (Armor[2]))
+                    st.write("Min Def: %s" % (Armor[1]))
+                    st.write("Max Def: %s" % (Armor[2]))
             elif(type.lower() == "enhancement"):
                 en = cur.execute(f"Select * from Enhancement Where Name='{item}'").fetchone()
                 st.write(f"Enhancement Type: {en[2]}")
@@ -85,6 +85,31 @@ def popUp(item):
                     if (st.button("Craft", ButtonId)):
                         craft(item)
                         st.rerun()
+            usedIn = cur.execute(f"Select Rname from Materials Where Name='{item}'").fetchall()
+            if (usedIn):
+                st.header("Used In")
+                for recipe in usedIn:
+                    with st.container():
+                        r, n = st.columns(2)
+                        with r:
+                            st.write(recipe[0])
+                        with n:
+                            st.write(cur.execute(f"Select Qty from Materials where (Rname='{recipe[0]}' and Name='{item}')").fetchone()[0])
+            DropsFrom = cur.execute(f"Select Enemy from Drops Where Item='{item}'").fetchall()
+            
+            if (DropsFrom):
+                st.header("Drops From")
+                for e in DropsFrom:
+                    with st.container():
+                        eName, Earea = st.columns(2)
+                        with eName:
+                            st.write(e[0])
+                        with Earea:
+                            area = cur.execute(f"Select Aname from Spawns Where Enemy='{e[0]}'").fetchone()[0]
+                            floor = cur.execute(f"Select FloorNum from Area Where Name='{area}'").fetchone()[0]
+                            st.write(f"Spawns in {area} on floor {floor}")
+                        
+
 
 def Inventory():
     items = cur.execute("Select * from Inventory").fetchall()    
