@@ -1,1 +1,1 @@
-.\venv\Scripts\python.exe -m streamlit run Main.py
+.\venv\Scripts\activate.bat
