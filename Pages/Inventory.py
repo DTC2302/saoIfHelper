@@ -13,13 +13,13 @@ con = sqlite3.connect(f"Users/{db}.db")
 cur = con.cursor()
 
 items = cur.execute("Select * from Inventory").fetchall()
-
+x = filter()
 if st.button("Goto Search"):
     st.switch_page("./Pages/Search.py")
 st.title("Inventory")
 for i in (items):
-    #if x(i):
-    #    continue
+    if x(i[0]):
+        continue
     with st.container():
         c1,c2,c3,c4,c5 = st.columns(5)
         with c1:
